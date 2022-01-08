@@ -3,10 +3,34 @@ import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
 import { productRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { getAllTiendas } from "../../apis/Tiendas/GetAllTiendas"
 
 export default function ProductList() {
-  const [data, setData] = useState(productRows);
+
+
+  const url=`http://127.0.0.1:8000/api/tienda`;
+  const [data,setData] =useState([])
+  
+  
+  const getAllTiendas= async() =>{
+    const url=`http://127.0.0.1:8000/api/tienda`;
+    const resp= await fetch(url);
+    const data= await resp.json();
+    const tiendas = data.map(tienda => {
+      return{
+          id:tienda.id,
+          titulo: tienda.titulo
+      } 
+    });
+    setData(tiendas);
+  }
+  useEffect(()=>{
+    getAllTiendas()
+    
+  },[])
+
+
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -15,28 +39,16 @@ export default function ProductList() {
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
-      field: "product",
-      headerName: "Product",
+      field: "titulo",
+      headerName: "titulo",
       width: 200,
       renderCell: (params) => {
         return (
           <div className="productListItem">
-            <img className="productListImg" src={params.row.img} alt="" />
-            {params.row.name}
+            {params.row.titulo}
           </div>
         );
       },
-    },
-    { field: "stock", headerName: "Stock", width: 200 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      width: 160,
     },
     {
       field: "action",
