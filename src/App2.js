@@ -14,7 +14,7 @@ function App2() {
             <HomeTienda />
           </Route>
 
-          <Route path="/productsList">
+          <Route path="/productsList/:tiendaId">
             <ProductList />
           </Route>
 
