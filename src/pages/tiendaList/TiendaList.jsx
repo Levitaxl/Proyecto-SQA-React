@@ -1,15 +1,11 @@
-import "./productList.css";
+import "./tiendaList.css";
 import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
-import { productRows } from "../../dummyData";
 import { Link } from "react-router-dom";
 import { useState,useEffect } from "react";
-import { getAllTiendas } from "../../apis/Tiendas/GetAllTiendas"
 
-export default function ProductList() {
-
-
-  const url=`http://127.0.0.1:8000/api/tienda`;
+export default function TiendaList() {
+  
   const [data,setData] =useState([])
   
   
@@ -56,7 +52,7 @@ export default function ProductList() {
       renderCell: (params) => {
         return (
           <>
-            <Link to={"/product/" + params.row.id}>
+            <Link to={"/tienda/" + params.row.id}>
               <button className="productListEdit">Edit</button>
             </Link>
             <DeleteOutline

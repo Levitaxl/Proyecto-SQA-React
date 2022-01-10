@@ -10,7 +10,7 @@ import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Form from './form/form/Form'
-import HomeTienda from './tiendas/src/pages/Home'
+import TiendaList from "./pages/tiendaList/TiendaList";
 
 function App() {
   return (
@@ -50,6 +50,25 @@ function App() {
           <Route path="/register">
             <Form />
           </Route>
+
+
+          <Route path="/tiendas">
+            <Sidebar />
+            <TiendaList />
+          </Route>
+          <Route path="/tienda/:tiendaId">
+            <Sidebar />
+            <Product />
+          </Route>
+          <Route path="/newTienda">
+            <Sidebar />
+            <NewProduct />
+          </Route>
+
+
+
+
+
         </Switch>
       </div>
     </Router>
