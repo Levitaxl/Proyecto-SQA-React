@@ -12,6 +12,7 @@ import NewProduct from "./pages/newProduct/NewProduct";
 import Form from './form/form/Form'
 import TiendaList from "./pages/tiendaList/TiendaList";
 import Tienda from "./pages/tienda/Tienda";
+import Producto from "./pages/producto/Producto"
 
 function App() {
   return (
@@ -60,6 +61,10 @@ function App() {
           <Route path="/tienda/:tiendaId">
             <Sidebar />
             <Tienda />
+          </Route>
+          <Route path="/producto/:productoId">
+            <Sidebar />
+            <Producto />
           </Route>
           <Route path="/newTienda">
             <Sidebar />
