@@ -11,6 +11,7 @@ import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
 import Form from './form/form/Form'
 import TiendaList from "./pages/tiendaList/TiendaList";
+import Tienda from "./pages/tienda/Tienda";
 
 function App() {
   return (
@@ -58,7 +59,7 @@ function App() {
           </Route>
           <Route path="/tienda/:tiendaId">
             <Sidebar />
-            <Product />
+            <Tienda />
           </Route>
           <Route path="/newTienda">
             <Sidebar />
