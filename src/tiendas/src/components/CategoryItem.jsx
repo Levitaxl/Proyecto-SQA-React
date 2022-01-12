@@ -49,7 +49,7 @@ const CategoryItem = ({ item }) => {
       <Image src={"http://127.0.0.1:8000/uploads/"+item.ruta_imagen_principal} />
       <Info>
         <Title>{item.titulo}</Title>
-        <Link to={"/tienda/" + item.id}>
+        <Link to={"/productsList/" + item.id}>
           <Button>SHOP NOW</Button>
         </Link>
        
