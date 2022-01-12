@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const useForm = (callback, validate) => {
   const [values, setValues] = useState({
-    username: '',
+    first_name: '',
     email: '',
     password: '',
-    password2: ''
+    password2: '',
+    last_name:'',
+    is_ucabista:false,
+    username:''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,8 +26,39 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
-    setIsSubmitting(true);
+    console.log(errors)
+    if(isEmpty(errors)) {
+      values.is_dueño=false;
+      axios.post(`http://127.0.0.1:8000/api/usuario/`, values)
+       .then(res => {
+          console.log(res);
+      })
+       .catch(err => console.log('Login: ', err));
+
+    }
+    
   };
+
+  function isEmpty(value){
+    var isEmptyObject = function(a) {
+      if (typeof a.length === 'undefined') { // it's an Object, not an Array
+        var hasNonempty = Object.keys(a).some(function nonEmpty(element){
+          return !isEmpty(a[element]);
+        });
+        return hasNonempty ? false : isEmptyObject(Object.keys(a));
+      }
+  
+      return !a.some(function nonEmpty(element) { // check if array is really not empty as JS thinks
+        return !isEmpty(element); // at least one element should be non-empty
+      });
+    };
+    return (
+      value == false
+      || typeof value === 'undefined'
+      || value == null
+      || (typeof value === 'object' && isEmptyObject(value))
+    );
+  }
 
   useEffect(
     () => {

@@ -1,7 +1,16 @@
 import styled from "styled-components";
 import {mobile} from "../responsive";
+import { useState,useEffect } from "react";
+import axios from "axios";
+import { BrowserRouter as Redirect } from "react-router-dom";
 
-const Container = styled.div`
+
+
+const Login = () => {
+
+  const [data,setData] =useState({})
+
+  const Container = styled.div`
   width: 100vw;
   height: 100vh;
   background: linear-gradient(
@@ -57,16 +66,90 @@ const Link = styled.a`
   cursor: pointer;
 `;
 
-const Login = () => {
+function handleSubmitLogin (e){
+  e.preventDefault();
+  let email           = document.getElementById("email").value;
+  let password        = document.getElementById("password").value;
+  let fail=false;
+
+  
+
+  if(email == 0) {
+    document.getElementById('email-error').style.display = 'block';
+    fail=true;
+  }
+  else  {
+    document.getElementById('email-error').style.display = 'none'
+    if(pruebaemail(email)==0) {
+      document.getElementById('email-structure-error').style.display = 'block'
+      fail=true;
+    }
+    else document.getElementById('email-structure-error').style.display = 'none'
+  };
+
+  
+  if(password == 0) {
+    document.getElementById('password-error').style.display = 'block';
+    fail=true;
+  }
+  else  document.getElementById('password-error').style.display = 'none';
+
+  if(fail==false){
+    let axiosConfig = {
+      headers: {'Access-Control-Allow-Origin': '*' }
+    };
+
+
+    const url='http://127.0.0.1:8000/api/usuarioLogin';
+    const body ={ email,password};
+    console.log(url)
+    axios.post(url, body)
+     .then(res => {
+       if(res['data'].length>0){
+          const user =res['data'];
+          window.localStorage.setItem(
+           'loggedNotAppUser', JSON.stringify(user)
+         )
+
+         window.location.href = "/home";
+       }
+       else alert('El correo con la clave no se encuentra en el sistema')
+
+    })
+     .catch(err => console.log('Login: ', err));
+  }
+}
+
+function pruebaemail (valor){
+  const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+  if(!re.exec(valor)){
+    return 0
+  }
+  else return 1
+}
+
   return (
     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
-        <Form>
-          <Input placeholder="username" />
-          <Input placeholder="password" />
+        <Form onSubmit={handleSubmitLogin} >
+          <Input
+            type='text'
+            name='email'
+            placeholder='Enter your email'
+            id="email"
+          />
+            <p id="email-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+            <p id="email-structure-error" className="text-danger" style={{display:'none'}}>Ingrese la estructura de un correo valida </p>
+            <Input
+              type='text'
+              name='password'
+              placeholder='Enter your password'
+              id="password"
+          />
+            <p id="password-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+            
           <Button>LOGIN</Button>
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>
         </Form>
       </Wrapper>

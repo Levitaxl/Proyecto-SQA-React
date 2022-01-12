@@ -51,7 +51,7 @@ function App() {
 
           <Route path="/register">
             <Form />
-          </Route>
+          </Route>/
 
 
           <Route path="/tiendas">
