@@ -23,7 +23,7 @@ function App2() {
             <Product />
           </Route>
 
-          <Route path="/tienda/register">
+          <Route path="/register">
             <Register />
           </Route>
 
