@@ -28,6 +28,7 @@ const FormSignup = ({ submitForm }) => {
             onChange={handleChange}
           />
           {errors.username && <p>{errors.username}</p>}
+          <p id="username-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El username ya se encuentra registrado en el sistema </p>
         </div>
         <div className='form-inputs'>
           <label className='form-label'>Nombres</label>
@@ -64,6 +65,7 @@ const FormSignup = ({ submitForm }) => {
             onChange={handleChange}
           />
           {errors.email && <p>{errors.email}</p>}
+          <p id="email-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El email ya se encuentra en el sistema </p>
         </div>
         <div className='form-inputs'>
           <label className='form-label'>Password</label>

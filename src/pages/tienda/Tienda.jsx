@@ -18,6 +18,7 @@ import axios from 'axios';
 
 
 
+
 export default function Tienda() {
   let { tiendaId } = useParams();
   const [data,setData] =useState({})

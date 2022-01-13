@@ -16,9 +16,14 @@ export default function Categories() {
   const [data,setData] =useState([]);
 
   const getTiendas= async() =>{
-    const url=`http://127.0.0.1:8000/api/tienda/`;
+    let user = window.localStorage.getItem('loggedNotAppUser');
+    if (user!= null) user=JSON.parse(user);
+    console.log(user)
+    const url=`http://127.0.0.1:8000/api/getAllTiendas/`+user['token'];
     const resp= await fetch(url);
+    
     const data= await resp.json();
+    console.log(data);
     setData(data);
   }
 

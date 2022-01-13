@@ -5,6 +5,7 @@ import {
 } from "@material-ui/icons";
 import { useState,useEffect } from "react";
 import axios from 'axios';
+import md5 from 'md5'
 export default function WidgetSm() {
   function handleSubmitDuenoDeNegocio (e){
     e.preventDefault();

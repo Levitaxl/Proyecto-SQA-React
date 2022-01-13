@@ -105,8 +105,10 @@ function handleSubmitLogin (e){
     console.log(url)
     axios.post(url, body)
      .then(res => {
-       if(res['data'].length>0){
-          const user =res['data'];
+       console.log(res['data']['login'])
+       if(res['data']['login']==true){
+          let user =res['data']['usuario'][0];
+          user['token']=res['data']['session']['token']
           window.localStorage.setItem(
            'loggedNotAppUser', JSON.stringify(user)
          )
