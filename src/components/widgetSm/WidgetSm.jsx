@@ -89,8 +89,6 @@ export default function WidgetSm() {
       
       axios.post(`http://127.0.0.1:8000/api/storeDuenoDeNegocio/`, datos)
        .then(res => {
-         console.log(res['data'])
-         console.log(res['data']['created'])
          if(res['data']['created']==false){
           console.log(res['data']['errors'][0]);
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';

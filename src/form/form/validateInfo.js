@@ -19,8 +19,8 @@ export default function validateInfo(values) {
   
   if (!values.password) {
     errors.password = 'Password is required';
-  } else if (values.password.length < 6) {
-    errors.password = 'Password needs to be 6 characters or more';
+  } else if (values.password.length < 4) {
+    errors.password = 'Password needs to be 4 characters or more';
   }
 
   if (!values.password2) {

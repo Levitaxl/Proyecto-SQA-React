@@ -97,7 +97,7 @@ export default function Tienda() {
     let last_name       = document.getElementById("last_name").value;
     let email           = document.getElementById("email").value;
     let password        = document.getElementById("password").value;
-    let imagen_principal = document.getElementById("imagen_principal").value;
+    let imagen_dueno   = document.getElementById("imagen_dueno").files[0];
     let fail=false;
 
     if(username == 0) {
@@ -147,6 +147,18 @@ export default function Tienda() {
       const is_ucabista=0;
       const is_not_ucabista=0;
 
+      var datos = new FormData(); 
+      datos.append('username', username);
+      datos.append('first_name', first_name);
+      datos.append('last_name', last_name);
+      datos.append('email', email);
+      datos.append('password', password);
+      datos.append('is_dueño', is_dueño);
+      datos.append('is_ucabista', is_ucabista);
+      datos.append('is_not_ucabista', is_not_ucabista);
+      datos.append('imagen_principal', imagen_dueno);
+
+
 
       const body ={ username       ,
                     first_name     ,
@@ -157,10 +169,26 @@ export default function Tienda() {
                     is_ucabista,
                     is_not_ucabista};
       
-      axios.post(`http://127.0.0.1:8000/api/usuario/`+dataDueno.id, body)
+      axios.post(`http://127.0.0.1:8000/api/usuario/`+dataDueno.id, datos)
        .then(res => {
-        let dueno= res['data']['user'];
-        setDataDueno(dueno);
+        if(res['data']['created']==false){
+          if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
+          else document.getElementById('titulo-has-already-been-taken-error').style.display = 'none';
+
+          if(res['data']['errors'][0]=='El nombre de usuario ya se encuentra registrado')document.getElementById('username-has-already-been-taken-error').style.display = 'block';
+          else document.getElementById('username-has-already-been-taken-error').style.display = 'none';
+
+          if(res['data']['errors'][0]=='El email de usuario ya se encuentra registrado')document.getElementById('email-has-already-been-taken-error').style.display = 'block';
+          else document.getElementById('email-has-already-been-taken-error').style.display = 'none';
+        }
+
+        else {
+          alert('usuario registrado exitosamente');
+          let dueno= res['data']['usuario'];
+          dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
+          setDataDueno(dueno);
+        }
+       
       })
        .catch(err => console.log('Login: ', err));
     }
@@ -177,6 +205,7 @@ export default function Tienda() {
   function handleSubmitTienda (e){
     e.preventDefault();
     let titulo        = document.getElementById("titulo").value;
+    let imagen_tienda = document.getElementById("imagen_tienda").files[0];
     let fail=false;
 
     if(titulo == 0) {
@@ -187,15 +216,26 @@ export default function Tienda() {
 
     if(fail==false){
       const dueno_id=dataDueno.id;
-      const body ={ titulo,dueno_id };
-      
-      axios.post(`http://127.0.0.1:8000/api/tienda/`+data.id, body)
+      var datos = new FormData(); 
+      datos.append('imagen_tienda', imagen_tienda);
+      datos.append('titulo', titulo);
+      datos.append('dueno_id', dueno_id); 
+       
+      axios.post(`http://127.0.0.1:8000/api/tienda/`+data.id, datos)
        .then(res => {
-        console.log(res);
-        let tienda= res['data']['tienda'];
-        tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
-        tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
-        setData(tienda);
+        if(res['data']['created']==false){
+          if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
+          else document.getElementById('titulo-has-already-been-taken-error').style.display = 'none';
+        }
+
+        else {
+          let tienda= res['data']['tienda'];
+          alert('Se actualizo la tienda exitosamente');
+          tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
+          tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
+          setData(tienda);
+        }
+        
       })
        .catch(err => console.log('Login: ', err));
     }
@@ -241,6 +281,7 @@ export default function Tienda() {
                   className="tiendaUpdateInput"
                   id='username'
                 />
+                <p id="username-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El username ya se encuentra registrado en el sistema </p>
                 <p id="username-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
               </div>
 
@@ -272,6 +313,7 @@ export default function Tienda() {
                   className="tiendaUpdateInput"
                   id='email'
                 />
+                 <p id="email-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El email ya se encuentra en el sistema </p>
                  <p id="email-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
                  <p id="email-structure-error" className="text-danger" style={{display:'none'}}>Ingrese la estructura de un correo valida </p>
               </div>
@@ -285,20 +327,38 @@ export default function Tienda() {
                 />
                  <p id="password-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
               </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Imagen Principal</label>
+                <input
+                  type="file"
+                  className="tiendaUpdateInput"
+                  id='imagen_dueno'
+                />
+                 <p id="imagen_dueno-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+        
+              </div>
+
+              <div className="tiendaUpdateItem">
+                
+
+                <button className="tiendaUpdateButton">Update</button> 
+                </div>
+
+              
             </div>
+            
+
             <div className="tiendaUpdateRight">
               <div className="tiendaUpdateUpload">
                 <img
                   className="tiendaUpdateImg"
-                  src={data.ruta_imagen_home}
+                  src={dataDueno.ruta_imagen_principal}
                   alt=""
                 />
-                <label htmlFor="file">
-                  <Publish className="tiendaUpdateIcon" />
-                </label>
                 <input type="file" id="file" style={{ display: "none" }}  id='imagen_principal'/>
               </div>
-              <button className="tiendaUpdateButton">Update</button>
+             
             </div>
           </form>
         </div>
@@ -329,8 +389,27 @@ export default function Tienda() {
                   className="tiendaUpdateInput"
                   id='titulo'
                 />
+                 <p id="titulo-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El titulo ya se encuentra en el sistema </p>
                  <p id="titulo-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
               </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Imagen De La Tienda</label>
+                <input
+                  type="file"
+                  className="tiendaUpdateInput"
+                  id='imagen_tienda'
+                />
+                 <p id="imagen_tienda-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+        
+              </div>
+
+              <div className="tiendaUpdateItem">
+                
+
+                <button className="tiendaUpdateButton">Update</button> 
+                </div>
+
             </div>
             <div className="tiendaUpdateRight">
               <div className="tiendaUpdateUpload">
@@ -339,13 +418,10 @@ export default function Tienda() {
                   src={data.ruta_imagen_home}
                   alt=""
                 />
-                <label htmlFor="file">
-                  <Publish className="tiendaUpdateIcon" />
-                </label>
                 <input type="file" id="file" style={{ display: "none" }} />
               </div>
               
-              <button className="tiendaUpdateButton">Update</button>
+      
             </div>
           </form>
         </div>
