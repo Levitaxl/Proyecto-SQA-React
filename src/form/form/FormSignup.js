@@ -4,10 +4,12 @@ import useForm from './useForm';
 import './Form.css';
 
 const FormSignup = ({ submitForm }) => {
+  
   const { handleChange, handleSubmit, values, errors } = useForm(
     submitForm,
     validate
   );
+
 
   return (
     <div className='form-content-right'>
@@ -16,16 +18,41 @@ const FormSignup = ({ submitForm }) => {
           Registro
         </h1>
         <div className='form-inputs'>
-          <label className='form-label'>Nombre Completo</label>
+          <label className='form-label'>UserName</label>
           <input
             className='form-input'
             type='text'
             name='username'
-            placeholder='Enter your username'
+            placeholder='Enter your UserName'
             value={values.username}
             onChange={handleChange}
           />
           {errors.username && <p>{errors.username}</p>}
+          <p id="username-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El username ya se encuentra registrado en el sistema </p>
+        </div>
+        <div className='form-inputs'>
+          <label className='form-label'>Nombres</label>
+          <input
+            className='form-input'
+            type='text'
+            name='first_name'
+            placeholder='Enter your first_name'
+            value={values.first_name}
+            onChange={handleChange}
+          />
+          {errors.first_name && <p>{errors.first_name}</p>}
+        </div>
+        <div className='form-inputs'>
+          <label className='form-label'>Apellidos</label>
+          <input
+            className='form-input'
+            type='text'
+            name='last_name'
+            placeholder='Enter your last_name'
+            value={values.last_name}
+            onChange={handleChange}
+          />
+          {errors.last_name && <p>{errors.last_name}</p>}
         </div>
         <div className='form-inputs'>
           <label className='form-label'>Email</label>
@@ -38,6 +65,7 @@ const FormSignup = ({ submitForm }) => {
             onChange={handleChange}
           />
           {errors.email && <p>{errors.email}</p>}
+          <p id="email-has-already-been-taken-error" className="text-danger" style={{display:'none'}}>El email ya se encuentra en el sistema </p>
         </div>
         <div className='form-inputs'>
           <label className='form-label'>Password</label>
@@ -66,12 +94,13 @@ const FormSignup = ({ submitForm }) => {
         <div className='form-inputs'>
           <label className='form-label'>Soy Ucabista</label>
           <input
-          className='checkbox'
+            className='checkbox'
             type='checkbox'
             name='is_ucabista'
             placeholder='Eres ucabista?'
             value={values.is_ucabista}
             onChange={handleChange}
+            id='is_ucabista'
           />
           {errors.is_ucabista && <p>{errors.is_ucabista}</p>}
         </div>

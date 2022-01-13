@@ -70,7 +70,7 @@ const Product = ({ item }) => {
   return (
     <Container>
       <Circle />
-      <Image src={item.img} />
+      <Image src={"http://127.0.0.1:8000/uploads/"+item.ruta_imagen_principal} />
       <Info>
         <Icon>
           <ShoppingCartOutlined />

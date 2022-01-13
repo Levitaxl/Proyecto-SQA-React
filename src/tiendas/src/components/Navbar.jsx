@@ -3,6 +3,7 @@ import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   height: 60px;
@@ -49,6 +50,8 @@ const Center = styled.div`
 
 const Logo = styled.h1`
   font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
   ${mobile({ fontSize: "24px" })}
 `;
 const Right = styled.div`
@@ -71,14 +74,12 @@ const Navbar = () => {
     <Container>
       <Wrapper>
         <Left>
-          <Language>EN</Language>
-          <SearchContainer>
-            <Input placeholder="Search" />
-            <Search style={{ color: "gray", fontSize: 16 }} />
-          </SearchContainer>
+        <Link to="/home" className="link">
+          <Logo>UCABDITO</Logo>
+          </Link>
         </Left>
         <Center>
-          <Logo>LAMA.</Logo>
+        
         </Center>
         <Right>
           <MenuItem>REGISTER</MenuItem>

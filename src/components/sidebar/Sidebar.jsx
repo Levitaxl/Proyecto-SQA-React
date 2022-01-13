@@ -39,22 +39,10 @@ export default function Sidebar() {
                 Clientes
               </li>
             </Link>
-            <Link to="/products" className="link">
+            <Link to="/tiendas" className="link">
               <li className="sidebarListItem">
                 <Storefront className="sidebarIcon" />
-                Dueños de negocios 
-              </li>
-            </Link>
-            <Link to="/users" className="link">
-              <li className="sidebarListItem">
-                <AttachMoney className="sidebarIcon" />
-                Tiendas
-              </li>
-            </Link>
-            <Link to="/products" className="link">
-              <li className="sidebarListItem">
-                <BarChart className="sidebarIcon" />
-                Productos
+               Tiendas 
               </li>
             </Link>
           </ul>

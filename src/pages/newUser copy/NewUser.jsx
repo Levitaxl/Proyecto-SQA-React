@@ -1,16 +1,10 @@
 import "./newUser.css";
 
 export default function NewUser() {
-
-  function handleSubmit (e){
-    e.preventDefault();
-    console.log('Prevenido');
-  }
-
   return (
     <div className="newUser">
       <h1 className="newUserTitle">Nuevo Dueño de negocio</h1>
-      <form className="newUserForm" onSubmit={handleSubmit}>
+      <form className="newUserForm">
         <div className="newUserItem">
           <label>Username</label>
           <input type="text" placeholder="john" />
