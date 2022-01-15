@@ -9,7 +9,7 @@ import NewUser from "./pages/newUser/NewUser";
 import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
-import Form from './form/form/Form'
+import Register from './pages/Register/Register'
 import TiendaList from "./pages/tiendaList/TiendaList";
 import Tienda from "./pages/tienda/Tienda";
 import Producto from "./pages/producto/Producto"
@@ -17,7 +17,6 @@ import Producto from "./pages/producto/Producto"
 function App() {
   return (
     <Router>
-      <Topbar />
       <div className="container">
         <Switch>
           <Route exact path="/">
@@ -50,7 +49,7 @@ function App() {
           </Route>
 
           <Route path="/register">
-            <Form />
+            <Register />
           </Route>/
 
 
