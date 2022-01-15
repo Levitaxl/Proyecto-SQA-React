@@ -37,6 +37,17 @@ function App() {
           }}>
           </Route>
 
+          <Route path="/newproduct"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><NewProduct /></div>
+            else window.location.href = "/login";
+          }}></Route>
+
+          <Route path="/producto/:productoId"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Producto /></div>
+            else window.location.href = "/login";
+          }}></Route>
+          
+
           <Route path="/users">
             <Sidebar />
             <UserList />
@@ -53,14 +64,6 @@ function App() {
             <Sidebar />
             <ProductList />
           </Route>
-          <Route path="/product/:productId">
-            <Sidebar />
-            <Product />
-          </Route>
-          <Route path="/newproduct">
-            <Sidebar />
-            <NewProduct />
-          </Route>
 
           <Route path="/register">
             <Register />
@@ -69,8 +72,10 @@ function App() {
 
           
           <Route path="/producto/:productoId">
-            <Sidebar />
-            <Producto />
+          < div className="container">
+              <Sidebar />
+              <Producto />
+            </div>
           </Route>
           <Route path="/newTienda">
             <Sidebar />

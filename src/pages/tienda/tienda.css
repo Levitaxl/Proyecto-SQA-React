@@ -32,6 +32,21 @@
   box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
 }
 
+.productosShow {
+  flex: 4 1;
+  padding: 20px;
+  -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+}
+
+.productoUpdate {
+  flex: 1 1;
+  padding: 20px;
+  -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  margin-left: 20px;
+}
+
 .tiendaUpdate {
   flex: 2;
   padding: 20px;
