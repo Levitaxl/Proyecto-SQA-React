@@ -164,19 +164,10 @@ export default function Tienda() {
       datos.append('is_ucabista', is_ucabista);
       datos.append('is_not_ucabista', is_not_ucabista);
       datos.append('imagen_principal', imagen_dueno);
-
-
-
-      const body ={ username       ,
-                    first_name     ,
-                    last_name      ,
-                    email          ,
-                    password,
-                    is_dueño,
-                    is_ucabista,
-                    is_not_ucabista};
       
-      axios.post(`http://127.0.0.1:8000/api/auth/usuario/`+dataDueno.id, datos,config)
+
+      
+      axios.post(`http://127.0.0.1:8000/api/auth/usuario/`+dataDueno.id,datos,config)
        .then(res => {
         if(res['data']['created']==false){
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
@@ -190,8 +181,8 @@ export default function Tienda() {
         }
 
         else {
-          alert('usuario registrado exitosamente');
-          let dueno= res['data']['usuario'];
+          alert('usuario actualizado exitosamente');
+          let dueno= res['data']['user'];
           dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
           setDataDueno(dueno);
         }
@@ -227,8 +218,16 @@ export default function Tienda() {
       datos.append('imagen_tienda', imagen_tienda);
       datos.append('titulo', titulo);
       datos.append('dueno_id', dueno_id); 
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
        
-      axios.post(`http://127.0.0.1:8000/api/tienda/`+data.id, datos)
+      axios.post(`http://127.0.0.1:8000/api/auth/tienda/`+data.id, datos,config)
        .then(res => {
         if(res['data']['created']==false){
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
