@@ -1,9 +1,9 @@
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import HomeTienda from './tiendas/src/pages/Home'
 import ProductList from './tiendas/src/pages/ProductList'
 import Product from './tiendas/src/pages/Product'
-import Login from "./pages/Login/Login"
+import Login from   "./pages/Login/Login"
+import Tiendas from './pages/Tiendas/Tiendas'
 
 function App2() {
   let user = window.localStorage.getItem('loggedNotAppUser');
@@ -12,7 +12,7 @@ function App2() {
     <Router>
         <Switch>
           <Route path="/home" render={()=>{
-            if(user!=null)return <HomeTienda/>
+            if(user!=null)return <Tiendas/>
             else return <Redirect to='/login'/>;
           }}>
           </Route>

@@ -9,8 +9,6 @@ import "./userList.css";
 import { useParams } from "react-router";
 import { useState,useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../../dummyData";
 import axios from 'axios';
 
 

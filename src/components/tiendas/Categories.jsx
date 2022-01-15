@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { mobile } from "../responsive";
+import { mobile } from "./responsive";
 import CategoryItem from "./CategoryItem";
 import { useState,useEffect } from "react";
+import axios from 'axios';
 
 
 export default function Categories() {
@@ -16,15 +17,18 @@ export default function Categories() {
   const [data,setData] =useState([]);
 
   const getTiendas= async() =>{
-    let user = window.localStorage.getItem('loggedNotAppUser');
-    if (user!= null) user=JSON.parse(user);
-    console.log(user)
-    const url=`http://127.0.0.1:8000/api/getAllTiendas/`+user['token'];
-    const resp= await fetch(url);
-    
-    const data= await resp.json();
-    console.log(data);
-    setData(data);
+    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUser'));
+    const token= user['access_token'];
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const url='http://127.0.0.1:8000/api/auth/tienda';
+    axios.get(url, config)
+    .then(res => {
+      setData(res['data']);
+    })
+    .catch(err => console.log('Login: ', err));
+  
   }
 
 

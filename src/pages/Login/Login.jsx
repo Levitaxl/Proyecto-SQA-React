@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {mobile} from "../../tiendas/src/responsive";
+import {mobile} from "../../components/tiendas/responsive";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Redirect } from "react-router-dom";

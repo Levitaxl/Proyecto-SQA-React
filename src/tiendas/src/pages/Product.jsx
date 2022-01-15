@@ -2,9 +2,9 @@ import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Navbar from "../../../components/tiendas/Navbar";
 import Newsletter from "../components/Newsletter";
-import { mobile } from "../responsive";
+import { mobile } from "../../../components/tiendas/responsive";
 
 const Container = styled.div``;
 
