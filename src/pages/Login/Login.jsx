@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {mobile} from "../responsive";
+import {mobile} from "../../tiendas/src/responsive";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Redirect } from "react-router-dom";
@@ -95,25 +95,18 @@ function handleSubmitLogin (e){
   else  document.getElementById('password-error').style.display = 'none';
 
   if(fail==false){
-    let axiosConfig = {
-      headers: {'Access-Control-Allow-Origin': '*' }
-    };
-
-
-    const url='http://127.0.0.1:8000/api/usuarioLogin';
-    const body ={ email,password};
-    console.log(url)
+    const url='http://127.0.0.1:8000/api/auth/login';
+    const body ={email,password};
     axios.post(url, body)
      .then(res => {
-       console.log(res['data']['login'])
        if(res['data']['login']==true){
-          let user =res['data']['usuario'][0];
-          user['token']=res['data']['session']['token']
+          let user =res['data'];
           window.localStorage.setItem(
            'loggedNotAppUser', JSON.stringify(user)
          )
 
          window.location.href = "/home";
+         alert('usuario logeado')
        }
        else alert('El correo con la clave no se encuentra en el sistema')
 
@@ -144,7 +137,7 @@ function pruebaemail (valor){
             <p id="email-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
             <p id="email-structure-error" className="text-danger" style={{display:'none'}}>Ingrese la estructura de un correo valida </p>
             <Input
-              type='text'
+              type='password'
               name='password'
               placeholder='Enter your password'
               id="password"

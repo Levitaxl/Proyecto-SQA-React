@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import HomeTienda from './tiendas/src/pages/Home'
 import ProductList from './tiendas/src/pages/ProductList'
 import Product from './tiendas/src/pages/Product'
-import Register from './tiendas/src/pages/Register'
-import Login from './tiendas/src/pages/Login'
+import Login from "./pages/Login/Login"
 
 function App2() {
   let user = window.localStorage.getItem('loggedNotAppUser');
