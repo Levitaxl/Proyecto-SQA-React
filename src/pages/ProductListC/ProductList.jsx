@@ -1,10 +1,7 @@
 import styled from "styled-components";
-import Navbar from "../../../components/tiendas/Navbar";
-import Announcement from "../components/Announcement";
-import Products from "../components/Products";
-import Newsletter from "../components/Newsletter";
-import Footer from "../components/Footer";
-import { mobile } from "../../../components/tiendas/responsive";
+import Navbar from "./../../components/tiendas/Navbar";
+import Products from "./../../components/tiendas/Products";
+import { mobile } from "./../../components/tiendas/responsive";
 
 
 export default function  ProductList () {
@@ -40,8 +37,6 @@ const Select = styled.select`
   ${mobile({ margin: "10px 0px" })}
 `;
 const Option = styled.option``;
-
-
 
 
   return (

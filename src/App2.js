@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import ProductList from './tiendas/src/pages/ProductList'
+import ProductList from "./pages/ProductListC/ProductList";
 import Product from './tiendas/src/pages/Product'
 import Login from   "./pages/Login/Login"
 import Tiendas from './pages/Tiendas/Tiendas'
