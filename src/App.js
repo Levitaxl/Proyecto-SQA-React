@@ -31,6 +31,11 @@ function App() {
           }}>
           </Route>
 
+          <Route path="/tiendas"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><TiendaList /></div>
+            else window.location.href = "/login";
+          }}>
+          </Route>
 
           <Route path="/users">
             <Sidebar />
@@ -62,10 +67,7 @@ function App() {
           </Route>/
 
 
-          <Route path="/tiendas">
-            <Sidebar />
-            <TiendaList />
-          </Route>
+          
           <Route path="/producto/:productoId">
             <Sidebar />
             <Producto />
