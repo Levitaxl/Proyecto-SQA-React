@@ -70,6 +70,13 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+
+  function myFunction(){
+    window.localStorage.removeItem('loggedNotAppUser');
+    alert('Se ha cerrado su sesion');
+    window.location.href = "/login";
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -83,7 +90,7 @@ const Navbar = () => {
         </Center>
         <Right>
           <MenuItem>PERFIL</MenuItem>
-          <MenuItem>LOG OUT</MenuItem>
+          <MenuItem onClick={myFunction}>LOG OUT</MenuItem>
         </Right>
       </Wrapper>
     </Container>

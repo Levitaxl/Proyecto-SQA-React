@@ -2,20 +2,18 @@ import "./sidebar.css";
 import {
   LineStyle,
   Timeline,
-  TrendingUp,
   PermIdentity,
   Storefront,
-  AttachMoney,
-  BarChart,
-  MailOutline,
-  DynamicFeed,
-  ChatBubbleOutline,
-  WorkOutline,
-  Report,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 
 export default function Sidebar() {
+
+   function myFunction(){
+    window.localStorage.removeItem('loggedNotAppUserAdmin');
+    alert('Se ha cerrado su sesion');
+    window.location.href = "/login";
+  }
   return (
     <div className="sidebar">
       <div className="sidebarWrapper">
@@ -45,6 +43,10 @@ export default function Sidebar() {
                Tiendas 
               </li>
             </Link>
+              <li className="sidebarListItem" onClick={myFunction}>
+                <Timeline className="sidebarIcon" />
+                Log Out 
+              </li>
           </ul>
         </div>
       </div>

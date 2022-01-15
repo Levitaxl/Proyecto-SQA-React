@@ -102,16 +102,20 @@ function handleSubmitLogin (e){
       console.log(res)
        if(res['data']['login']==true){
           let user =res['data'];
-          if(user['is_ucabista'] || user['is_ucabista']){
+          console.log('is Ucabista'+user['user']['is_ucabista']);
+          console.log('is Ucabista'+user['user']['is_not_ucabista']);
+          console.log('is Ucabista'+user['user']['is_dueño']);
+          if(user['user']['is_ucabista']==true || user['user']['is_not_ucabista'] ==true){
             alert('usuario logeado')
             window.localStorage.setItem('loggedNotAppUser', JSON.stringify(user))
             window.location.href = "/home";
           }
-          else if(user['is_dueño']){
+          else if(user['user']['is_dueño']==true){
             alert('usuario logeado')
             window.localStorage.setItem('loggedNotAppUserDueno', JSON.stringify(user))
           }
-          else{
+          else if(user['user']['is_ucabista']==false &&  user['user']['is_not_ucabista'] ==false && user['user']['is_dueño']==false){
+            alert('usuario logeado')
             window.localStorage.setItem('loggedNotAppUserAdmin', JSON.stringify(user))
             window.location.href = "/admin/index";
             
