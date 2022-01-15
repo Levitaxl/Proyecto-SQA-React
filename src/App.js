@@ -46,12 +46,13 @@ function App() {
             if(admin!=null)return <div className="container"><Sidebar /><Producto /></div>
             else window.location.href = "/login";
           }}></Route>
+
+          <Route path="/users"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><UserList /></div>
+            else window.location.href = "/login";
+          }}></Route>
           
 
-          <Route path="/users">
-            <Sidebar />
-            <UserList />
-          </Route>
           <Route path="/user/:userId">
            <Sidebar />
             <User />

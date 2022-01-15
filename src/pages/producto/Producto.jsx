@@ -17,13 +17,28 @@ export default function Producto() {
   const [data,setData] =useState({})
 
   const getProducto= async(tiendaId) =>{
-    const url=`http://127.0.0.1:8000/api/producto/`+productoId;
-    const resp= await fetch(url);
-    let data= await resp.json();
-    data.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+data.ruta_imagen_principal
-    if(data.estado_publicado==0)data.estado_publicado='No publicado';
-    else data.estado_publicado='Publicado';
-    setData(data);
+    const url=`http://127.0.0.1:8000/api/auth/producto/`+productoId;
+
+
+    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+    const token= user['access_token'];
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+     
+    axios.get(url,config)
+     .then(res => {
+        let data= res['data'];
+        data.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+data.ruta_imagen_principal
+        if(data.estado_publicado==0)data.estado_publicado='No publicado';
+        else data.estado_publicado='Publicado';
+        setData(data);
+      
+    })
+     .catch(err => console.log('Login: ', err));
+   
   }
 
 
@@ -34,6 +49,7 @@ export default function Producto() {
   function handleSubmitProducto(e){
     e.preventDefault();
     let titulo                  = document.getElementById("titulo").value;
+    let imagen_producto         = document.getElementById("imagen_producto").files[0];
     let cantidad                = document.getElementById("cantidad").value;
     let estado_publicado        = document.getElementById("estado_publicado").value;
     let descripcion             = document.getElementById("descripcion").value;
@@ -68,18 +84,27 @@ export default function Producto() {
     
     if(fail==false){
 
-      const body ={ titulo       ,
-                    cantidad     ,
-                    estado_publicado,
-                    descripcion};
-      
-      axios.post(`http://127.0.0.1:8000/api/producto/`+data.id, body)
+      var datos = new FormData(); 
+      datos.append('titulo', titulo);
+      datos.append('imagen_producto', imagen_producto);
+      datos.append('cantidad', cantidad); 
+      datos.append('estado_publicado', estado_publicado);
+      datos.append('descripcion', descripcion);
+
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+          headers: { Authorization: `Bearer ${token}` }
+      };
+              
+      axios.post(`http://127.0.0.1:8000/api/auth/producto/`+data.id, datos,config)
        .then(res => {
-          console.log(res);
           let producto= res['data']['producto'];
-          data.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+data.ruta_imagen_principal
-          if(data.estado_publicado==0)data.estado_publicado='No publicado';
-          else data.estado_publicado='Publicado';
+          producto.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+producto.ruta_imagen_principal
+          if(producto.estado_publicado==0)producto.estado_publicado='No publicado';
+          else producto.estado_publicado='Publicado';
           setData(producto);
       })
        .catch(err => console.log('Login: ', err));
@@ -93,9 +118,6 @@ export default function Producto() {
     <div className="producto">
       <div className="productoTitleContainer">
         <h1 className="productoTitle">Producto</h1>
-        <Link to="/newproducto">
-          <button className="productoAddButton">Create</button>
-        </Link>
       </div>
       <div className="productoContainer">
         <div className="productoShow">
@@ -124,7 +146,7 @@ export default function Producto() {
                 <label>titulo</label>
                 <input
                   type="text"
-                  placeholder="annabeck99"
+                  placeholder={data.titulo}
                   className="productoUpdateInput"
                   id='titulo'
                 />
@@ -134,7 +156,7 @@ export default function Producto() {
                 <label>cantidad</label>
                 <input
                   type="number"
-                  placeholder="Anna Becker"
+                  placeholder={data.cantidad}
                   className="productoUpdateInput"
                   id='cantidad'
                 />
@@ -144,7 +166,7 @@ export default function Producto() {
                 <label>estado_publicado</label>
                 <input
                   type="text"
-                  placeholder="annabeck99@gmail.com"
+                  placeholder={data.estado_publicado}
                   className="productoUpdateInput"
                   id='estado_publicado'
                 />
@@ -154,12 +176,27 @@ export default function Producto() {
                 <label>descripcion</label>
                 <input
                   type="text"
-                  placeholder="+1 123 456 67"
+                  placeholder= {data.descripcion}
                   className="productoUpdateInput"
                   id='descripcion'
                 />
                  <p id="descripcion-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+              </div> 
+
+              <div className="tiendaUpdateItem">
+                <label>Imagen Del Producto</label>
+                <input
+                  type="file"
+                  className="tiendaUpdateInput"
+                  id='imagen_producto'
+                />
+                 <p id="imagen_producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+        
               </div>
+
+              <div className="productoUpdateItem">
+                <button className="productoUpdateButton">Update</button>
+                </div>
             </div>
             <div className="productoUpdateRight">
               <div className="productoUpdateUpload">
@@ -168,12 +205,9 @@ export default function Producto() {
                   src={data.ruta_imagen_principal}
                   alt=""
                 />
-                <label htmlFor="file">
-                  <Publish className="productoUpdateIcon" />
-                </label>
                 <input type="file" id="file" style={{ display: "none" }} />
               </div>
-              <button className="productoUpdateButton">Update</button>
+             
             </div>
           </form>
         </div>
