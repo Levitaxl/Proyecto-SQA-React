@@ -58,7 +58,7 @@ export default function WidgetSm() {
     else  document.getElementById('titulo-error').style.display = 'none';
 
 
-
+    
     if(fail==false){
       const is_dueño=1;
       const is_ucabista=0;
@@ -77,9 +77,17 @@ export default function WidgetSm() {
       datos.append('imagen_tienda', imagen_tienda);
       datos.append('titulo', titulo); 
 
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
       
-      axios.post(`http://127.0.0.1:8000/api/storeDuenoDeNegocio/`, datos)
+      
+      axios.post(`http://127.0.0.1:8000/api/auth/storeDuenoDeNegocio`,datos,config)
        .then(res => {
+         console.log(res)
          if(res['data']['created']==false){
           console.log(res['data']['errors'][0]);
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';

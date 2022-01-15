@@ -99,14 +99,25 @@ function handleSubmitLogin (e){
     const body ={email,password};
     axios.post(url, body)
      .then(res => {
+      console.log(res)
        if(res['data']['login']==true){
           let user =res['data'];
-          window.localStorage.setItem(
-           'loggedNotAppUser', JSON.stringify(user)
-         )
-
-         window.location.href = "/home";
-         alert('usuario logeado')
+          if(user['is_ucabista'] || user['is_ucabista']){
+            alert('usuario logeado')
+            window.localStorage.setItem('loggedNotAppUser', JSON.stringify(user))
+            window.location.href = "/home";
+          }
+          else if(user['is_dueño']){
+            alert('usuario logeado')
+            window.localStorage.setItem('loggedNotAppUserDueno', JSON.stringify(user))
+          }
+          else{
+            window.localStorage.setItem('loggedNotAppUserAdmin', JSON.stringify(user))
+            window.location.href = "/admin/index";
+            
+          }
+         
+         
        }
        else alert('El correo con la clave no se encuentra en el sistema')
 

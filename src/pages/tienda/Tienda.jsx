@@ -32,22 +32,30 @@ export default function Tienda() {
   
 
   const getTienda= async(tiendaId) =>{
-    const url=`http://127.0.0.1:8000/api/tienda/`+tiendaId;
-    const resp= await fetch(url);
-    const data= await resp.json();
-    let tienda =data['tienda'];
-    let dueno= data['dueno'];
-    let productos= data['productos'];
-    tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
-    tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
-    dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
-    setData(tienda);
-    setDataDueno(dueno)
-    setDataProductos(productos)
+    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+    const token= user['access_token'];
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const url=`http://127.0.0.1:8000/api/auth/tienda/`+tiendaId;
+    axios.get(url, config)
+    .then(res => {
+      const data=res['data'];
+      let tienda =data['tienda'];
+      let dueno= data['dueno'];
+      let productos= data['productos'];
+      tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
+      tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
+      dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
+      setData(tienda);
+      setDataDueno(dueno)
+      setDataProductos(productos)
+    })
+    .catch(err => console.log('Login: ', err));
   }
 
 
-  useEffect((tiendaId)=>{
+  useEffect(()=>{
     getTienda(tiendaId)
   },[])
 
@@ -134,13 +142,17 @@ export default function Tienda() {
     else  document.getElementById('password-error').style.display = 'none';
 
     if(fail==false){
-      let axiosConfig = {
-        headers: {'Access-Control-Allow-Origin': '*' }
-      };
 
       const is_dueño=1;
       const is_ucabista=0;
       const is_not_ucabista=0;
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
 
       var datos = new FormData(); 
       datos.append('username', username);
@@ -164,7 +176,7 @@ export default function Tienda() {
                     is_ucabista,
                     is_not_ucabista};
       
-      axios.post(`http://127.0.0.1:8000/api/usuario/`+dataDueno.id, datos)
+      axios.post(`http://127.0.0.1:8000/api/auth/usuario/`+dataDueno.id, datos,config)
        .then(res => {
         if(res['data']['created']==false){
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';

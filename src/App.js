@@ -1,7 +1,7 @@
 import Sidebar from "./components/sidebar/Sidebar";
 import "./App.css";
 import Home from "./pages/home/Home";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route,Redirect } from "react-router-dom";
 import UserList from "./pages/userList/UserList";
 import User from "./pages/user/User";
 import NewUser from "./pages/newUser/NewUser";
@@ -14,14 +14,24 @@ import Tienda from "./pages/tienda/Tienda";
 import Producto from "./pages/producto/Producto"
 
 function App() {
+  let admin = window.localStorage.getItem('loggedNotAppUserAdmin');
+  if (admin!= null) admin=JSON.parse(admin);
   return (
     <Router>
-      <div className="container">
         <Switch>
-          <Route exact path="/">
-            <Sidebar />
-            <Home />
+          <Route path="/admin/index" render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Home /></div>
+            else window.location.href = "/login";
+          }}>
           </Route>
+
+          <Route path="/tienda/:tiendaId"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Tienda /></div>
+            else window.location.href = "/login";
+          }}>
+          </Route>
+
+
           <Route path="/users">
             <Sidebar />
             <UserList />
@@ -56,10 +66,6 @@ function App() {
             <Sidebar />
             <TiendaList />
           </Route>
-          <Route path="/tienda/:tiendaId">
-            <Sidebar />
-            <Tienda />
-          </Route>
           <Route path="/producto/:productoId">
             <Sidebar />
             <Producto />
@@ -74,7 +80,6 @@ function App() {
 
 
         </Switch>
-      </div>
     </Router>
     
   );

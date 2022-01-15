@@ -8,6 +8,9 @@ import Tiendas from './pages/Tiendas/Tiendas'
 function App2() {
   let user = window.localStorage.getItem('loggedNotAppUser');
   if (user!= null) user=JSON.parse(user);
+
+  let admin = window.localStorage.getItem('loggedNotAppUserAdmin');
+  if (admin!= null) admin=JSON.parse(admin);
   return (
     <Router>
         <Switch>
@@ -35,6 +38,10 @@ function App2() {
      
 
           <Route path="/login">
+            <Login />
+          </Route>
+
+          <Route path="/admin/login">
             <Login />
           </Route>
         </Switch>
