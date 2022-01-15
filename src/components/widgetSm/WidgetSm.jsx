@@ -1,11 +1,5 @@
 import "./widgetSm.css";
-import {
-  CollectionsBookmarkOutlined,
-  Publish,
-} from "@material-ui/icons";
-import { useState,useEffect } from "react";
 import axios from 'axios';
-import md5 from 'md5'
 export default function WidgetSm() {
   function handleSubmitDuenoDeNegocio (e){
     e.preventDefault();
@@ -66,10 +60,6 @@ export default function WidgetSm() {
 
 
     if(fail==false){
-      let axiosConfig = {
-        headers: {'Access-Control-Allow-Origin': '*' }
-      };
-
       const is_dueño=1;
       const is_ucabista=0;
       const is_not_ucabista=0;

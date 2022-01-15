@@ -17,13 +17,19 @@ function App2() {
           }}>
           </Route>
 
-          <Route path="/productsList/:tiendaId">
-            <ProductList />
+          <Route path="/productsList/:tiendaId"
+           render={()=>{
+            if(user!=null)return <ProductList/>
+            else return <Redirect to='/login'/>;
+          }}>
           </Route>
 
 
-          <Route path="/tienda/producto">
-            <Product />
+          <Route path="/tienda/producto"
+          render={()=>{
+            if(user!=null)return <Product/>
+            else return <Redirect to='/login'/>;
+          }}>
           </Route>
 
      
