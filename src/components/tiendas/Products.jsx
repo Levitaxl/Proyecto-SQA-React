@@ -5,32 +5,7 @@ import { useParams } from "react-router";
 import axios from 'axios';
 
 
-export default function Products () {
-
-  let { tiendaId } = useParams();
-
-  const [data,setData] =useState([]);
-
-  const getProductosByTiendaId= async(tiendaId) =>{
-    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUser'));
-    const token= user['access_token'];
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    const url=`http://127.0.0.1:8000/api/auth/productos/tienda/`+tiendaId;
-    axios.get(url, config)
-    .then(res => {
-      setData(res['data']);
-    })
-    .catch(err => console.log('Login: ', err));
-  }
-
-
-  useEffect(()=>{
-    getProductosByTiendaId(tiendaId)
-  },[])
-
-
+export default function Products (productList) { 
 
 
 const Container = styled.div`
@@ -40,6 +15,29 @@ const Container = styled.div`
     justify-content: space-between;
 `;
 
+
+let { tiendaId } = useParams();
+
+const [data,setData] =useState([]);
+
+const getProductosByTiendaId= async(tiendaId) =>{
+  const user = JSON.parse(window.localStorage.getItem('loggedNotAppUser'));
+  const token= user['access_token'];
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+  const url=`http://127.0.0.1:8000/api/auth/productos/tienda/`+tiendaId;
+  axios.get(url, config)
+  .then(res => {
+    setData(res['data']['productos']);
+  })
+  .catch(err => console.log('Login: ', err));
+}
+
+
+useEffect(()=>{
+  getProductosByTiendaId(tiendaId)
+},[])
 
   return (
     <Container>
