@@ -3,40 +3,51 @@ import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
 import { userRows } from "../../dummyData";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import axios from "axios";
 
 export default function UserList() {
-  const [data, setData] = useState(userRows);
+  const [data, setData] = useState([]);
 
-  const handleDelete = (id) => {
-    setData(data.filter((item) => item.id !== id));
-  };
+  
+  
+  const getAllTiendas= async() =>{
+    let user = window.localStorage.getItem('loggedNotAppUserAdmin');
+    if (user!= null) user=JSON.parse(user);
+    const token=user['access_token'];
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    
+    const url=`http://127.0.0.1:8000/api/auth/getAllUsers`;
+   
+    axios.get(url, config)
+    .then(res => {
+      console.log(res)
+      const data=res['data'];
+      setData(data);
+    })
+    .catch(err => console.log('Login: ', err));
+
+    
+  }
+  useEffect(()=>{
+    getAllTiendas()
+  },[])
+
   
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     {
-      field: "user",
-      headerName: "User",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <div className="userListUser">
-            <img className="userListImg" src={params.row.avatar} alt="" />
-            {params.row.username}
-          </div>
-        );
-      },
+      field: "username",
+      headerName: "Username",
+      width: 200
     },
     { field: "email", headerName: "Email", width: 200 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-    },
-    {
-      field: "transaction",
-      headerName: "Transaction Volume",
-      width: 160,
+      field: "is_ucabista",
+      headerName: "Es Ucabista?",
+      width: 200
     },
     {
       field: "action",
@@ -48,10 +59,6 @@ export default function UserList() {
             <Link to={"/user/" + params.row.id}>
               <button className="userListEdit">Edit</button>
             </Link>
-            <DeleteOutline
-              className="userListDelete"
-              onClick={() => handleDelete(params.row.id)}
-            />
           </>
         );
       },
