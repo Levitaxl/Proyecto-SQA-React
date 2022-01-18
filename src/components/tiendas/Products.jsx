@@ -3,6 +3,7 @@ import Product from "./Product";
 import { useState,useEffect } from "react";
 import { useParams } from "react-router";
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
 
 export default function Products (productList) { 
@@ -42,7 +43,8 @@ useEffect(()=>{
   return (
     <Container>
       {data.map((item) => (
-        <Product item={item} key={item.id} />
+        
+          <Product item={item} key={item.id} />
       ))}
     </Container>
   );

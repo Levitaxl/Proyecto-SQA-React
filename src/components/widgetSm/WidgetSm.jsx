@@ -13,6 +13,9 @@ export default function WidgetSm() {
     let imagen_tienda = document.getElementById("imagen_tienda").files[0];
     let fail=false;
 
+    console.log('el email es:'+ email);
+    console.log(pruebaemail(email));
+
     if(username == 0) {
       document.getElementById('username-error').style.display = 'block';
       fail=true;
@@ -111,7 +114,7 @@ export default function WidgetSm() {
   }
 
   function pruebaemail (valor){
-    const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+    const re=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
     if(!re.exec(valor)){
       return 0
     }
@@ -158,7 +161,6 @@ export default function WidgetSm() {
                 <label>Email</label>
                 <input
                   type="text"
-
                   className="tiendaUpdateInput"
                   id='email'
                 />

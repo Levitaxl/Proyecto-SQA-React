@@ -5,6 +5,9 @@ import Footer from "../components/Footer";
 import Navbar from "../../../components/tiendas/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../../../components/tiendas/responsive";
+import { useState,useEffect } from "react";
+import { useParams } from "react-router";
+import axios from 'axios';
 
 const Container = styled.div``;
 
@@ -116,54 +119,64 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+
+  let { productId } = useParams();
+  const [data,setData] =useState({})
+
+  const getProducto= async(tiendaId) =>{
+    const url=`http://127.0.0.1:8000/api/auth/producto/`+productId;
+
+
+    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUser'));
+    const token= user['access_token'];
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+     
+    axios.get(url,config)
+     .then(res => {
+        let data= res['data'];
+        data.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+data.ruta_imagen_principal
+        if(data.estado_publicado==0)data.estado_publicado='No publicado';
+        else data.estado_publicado='Publicado';
+        setData(data);
+      
+    })
+     .catch(err => console.log('Login: ', err));
+   
+  }
+
+
+  useEffect(()=>{
+    getProducto(productId)
+  },[])
+
+
   return (
     <Container>
       <Navbar />
-      <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+          <Image src={data.ruta_imagen_principal} />
         </ImgContainer>
         <InfoContainer>
-          <Title>Denim Jumpsuit</Title>
+          <Title>{data.titulo}</Title>
           <Desc>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
-            iaculis arcu nisi sed mauris. Nulla fermentum vestibulum ex, eget
-            tristique tortor pretium ut. Curabitur elit justo, consequat id
-            condimentum ac, volutpat ornare.
+            {data.descripcion}
           </Desc>
-          <Price>$ 20</Price>
-          <FilterContainer>
-            <Filter>
-              <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
-            </Filter>
-            <Filter>
-              <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
-              </FilterSize>
-            </Filter>
-          </FilterContainer>
+          <Price>$ {data.cantidad}</Price>
           <AddContainer>
             <AmountContainer>
               <Remove />
-              <Amount>1</Amount>
+              <Amount>{data.cantidad}</Amount>
               <Add />
             </AmountContainer>
             <Button>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>
-      <Newsletter />
-      <Footer />
     </Container>
   );
 };

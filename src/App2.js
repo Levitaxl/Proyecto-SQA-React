@@ -8,6 +8,7 @@ import Tiendas from './pages/Tiendas/Tiendas'
 function App2() {
   let user = window.localStorage.getItem('loggedNotAppUser');
   if (user!= null) user=JSON.parse(user);
+  console.log(user);
 
   let admin = window.localStorage.getItem('loggedNotAppUserAdmin');
   if (admin!= null) admin=JSON.parse(admin);
@@ -27,9 +28,7 @@ function App2() {
           }}>
           </Route>
 
-
-          <Route path="/tienda/producto"
-          render={()=>{
+          <Route path="/client/product/:productId" render={()=>{
             if(user!=null)return <Product/>
             else return <Redirect to='/login'/>;
           }}>

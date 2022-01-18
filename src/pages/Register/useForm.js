@@ -26,11 +26,16 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
+    console.log(values)
+    console.log(errors);
+    const is_ucabista = document.getElementById('is_ucabista').checked;
+    values['is_ucabista']=is_ucabista;
     if(isEmpty(errors)) {
       axios.post(`http://127.0.0.1:8000/api/auth/register/`, values)
        .then(res => {
+         console.log(res)
         if(res['data']['created']==false){
-          if(res['data']['errors'][0]=='El nombre de usuario ya se encuentra registrado')document.getElementById('username-has-already-been-taken-error').style.display = 'block';
+          if(res['data']['errors'][0]=="El nombre de User ya se encuentra registrado")document.getElementById('username-has-already-been-taken-error').style.display = 'block';
           else document.getElementById('username-has-already-been-taken-error').style.display = 'none';
          
           if(res['data']['errors'][0]=='El email de usuario ya se encuentra registrado')document.getElementById('email-has-already-been-taken-error').style.display = 'block';
