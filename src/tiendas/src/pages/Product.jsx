@@ -183,6 +183,9 @@ const Product = () => {
     axios.post(`http://127.0.0.1:8000/api/auth/carro/add`,datos,config)
        .then(res => {
          console.log(res);
+         alert('Operación exitosa, producto agregado al carrito');
+         window.location.href = "/cart";
+
       })
        .catch(err => console.log('Login: ', err));
     
