@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {mobile} from "../responsive";
+import {mobile} from "../../components/tiendas/responsive";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Redirect } from "react-router-dom";
@@ -95,25 +95,33 @@ function handleSubmitLogin (e){
   else  document.getElementById('password-error').style.display = 'none';
 
   if(fail==false){
-    let axiosConfig = {
-      headers: {'Access-Control-Allow-Origin': '*' }
-    };
-
-
-    const url='http://127.0.0.1:8000/api/usuarioLogin';
-    const body ={ email,password};
-    console.log(url)
+    const url='http://127.0.0.1:8000/api/auth/login';
+    const body ={email,password};
     axios.post(url, body)
      .then(res => {
-       console.log(res['data']['login'])
+      console.log(res)
        if(res['data']['login']==true){
-          let user =res['data']['usuario'][0];
-          user['token']=res['data']['session']['token']
-          window.localStorage.setItem(
-           'loggedNotAppUser', JSON.stringify(user)
-         )
-
-         window.location.href = "/home";
+          let user =res['data'];
+          console.log('is Ucabista'+user['user']['is_ucabista']);
+          console.log('is Ucabista'+user['user']['is_not_ucabista']);
+          console.log('is Ucabista'+user['user']['is_dueño']);
+          if(user['user']['is_ucabista']==true || user['user']['is_not_ucabista'] ==true){
+            alert('usuario logeado')
+            window.localStorage.setItem('loggedNotAppUser', JSON.stringify(user))
+            window.location.href = "/home";
+          }
+          else if(user['user']['is_dueño']==true){
+            alert('usuario logeado')
+            window.localStorage.setItem('loggedNotAppUserDueno', JSON.stringify(user))
+          }
+          else if(user['user']['is_ucabista']==false &&  user['user']['is_not_ucabista'] ==false && user['user']['is_dueño']==false){
+            alert('usuario logeado')
+            window.localStorage.setItem('loggedNotAppUserAdmin', JSON.stringify(user))
+            window.location.href = "/admin/index";
+            
+          }
+         
+         
        }
        else alert('El correo con la clave no se encuentra en el sistema')
 
@@ -123,7 +131,7 @@ function handleSubmitLogin (e){
 }
 
 function pruebaemail (valor){
-  const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+  const re=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
   if(!re.exec(valor)){
     return 0
   }
@@ -133,7 +141,7 @@ function pruebaemail (valor){
   return (
     <Container>
       <Wrapper>
-        <Title>SIGN IN</Title>
+        <Title>LOGIN</Title>
         <Form onSubmit={handleSubmitLogin} >
           <Input
             type='text'
@@ -144,7 +152,7 @@ function pruebaemail (valor){
             <p id="email-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
             <p id="email-structure-error" className="text-danger" style={{display:'none'}}>Ingrese la estructura de un correo valida </p>
             <Input
-              type='text'
+              type='password'
               name='password'
               placeholder='Enter your password'
               id="password"

@@ -3,6 +3,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import { DeleteOutline } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { useState,useEffect } from "react";
+import axios from 'axios';
 
 export default function TiendaList() {
   
@@ -10,18 +11,30 @@ export default function TiendaList() {
   
   
   const getAllTiendas= async() =>{
-    let user = window.localStorage.getItem('loggedNotAppUser');
+    let user = window.localStorage.getItem('loggedNotAppUserAdmin');
     if (user!= null) user=JSON.parse(user);
-    const url=`http://127.0.0.1:8000/api/getAllTiendas/`+user['token'];
-    const resp= await fetch(url);
-    const data= await resp.json();
-    const tiendas = data.map(tienda => {
-      return{
-          id:tienda.id,
-          titulo: tienda.titulo
-      } 
-    });
-    setData(tiendas);
+    const token=user['access_token'];
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    
+    const url=`http://127.0.0.1:8000/api/getAllTiendas`;
+   
+    axios.get(url, config)
+    .then(res => {
+      const data=res['data'];
+      const tiendas = data.map(tienda => {
+        return{
+            id:tienda.id,
+            titulo: tienda.titulo
+        } 
+      });
+
+      setData(tiendas);
+    })
+    .catch(err => console.log('Login: ', err));
+
+    
   }
   useEffect(()=>{
     getAllTiendas()

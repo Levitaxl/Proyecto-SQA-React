@@ -1,10 +1,7 @@
 import {
   CalendarToday,
-  LocationSearching,
-  MailOutline,
   PermIdentity,
   PhoneAndroid,
-  Publish,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import "./tienda.css";
@@ -12,8 +9,6 @@ import "./userList.css";
 import { useParams } from "react-router";
 import { useState,useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { DeleteOutline } from "@material-ui/icons";
-import { userRows } from "../../dummyData";
 import axios from 'axios';
 
 
@@ -23,7 +18,6 @@ export default function Tienda() {
   let { tiendaId } = useParams();
   const [data,setData] =useState({})
   const [dataDueno, setDataDueno] = useState({});
-  const [dataUser, setDataUser] = useState(userRows);
   const [dataProductos,setDataProductos] = useState([
     {
       id: '',
@@ -38,18 +32,26 @@ export default function Tienda() {
   
 
   const getTienda= async(tiendaId) =>{
-    const url=`http://127.0.0.1:8000/api/tienda/`+tiendaId;
-    const resp= await fetch(url);
-    const data= await resp.json();
-    let tienda =data['tienda'];
-    let dueno= data['dueno'];
-    let productos= data['productos'];
-    tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
-    tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
-    dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
-    setData(tienda);
-    setDataDueno(dueno)
-    setDataProductos(productos)
+    const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+    const token= user['access_token'];
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const url=`http://127.0.0.1:8000/api/auth/tienda/`+tiendaId;
+    axios.get(url, config)
+    .then(res => {
+      const data=res['data'];
+      let tienda =data['tienda'];
+      let dueno= data['dueno'];
+      let productos= data['productos'];
+      tienda.ruta_imagen_home='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_home
+      tienda.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+tienda.ruta_imagen_principal
+      dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
+      setData(tienda);
+      setDataDueno(dueno)
+      setDataProductos(productos)
+    })
+    .catch(err => console.log('Login: ', err));
   }
 
 
@@ -62,23 +64,13 @@ export default function Tienda() {
     {
       field: "titulo",
       headerName: "titulo",
-      width: 200,
-    },
-    { field: "cantidad", headerName: "cantidad", width: 200 },
-    {
-      field: "estado_publicado",
-      headerName: "estado_publicado",
-      width: 120,
-    },
-    {
-      field: "descripcion",
-      headerName: "descripcion",
       width: 160,
     },
+    { field: "cantidad", headerName: "cantidad", width: 130 },
     {
       field: "action",
       headerName: "Action",
-      width: 150,
+      width: 130,
       renderCell: (params) => {
         return (
           <>
@@ -140,13 +132,17 @@ export default function Tienda() {
     else  document.getElementById('password-error').style.display = 'none';
 
     if(fail==false){
-      let axiosConfig = {
-        headers: {'Access-Control-Allow-Origin': '*' }
-      };
 
       const is_dueño=1;
       const is_ucabista=0;
       const is_not_ucabista=0;
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
 
       var datos = new FormData(); 
       datos.append('username', username);
@@ -158,19 +154,10 @@ export default function Tienda() {
       datos.append('is_ucabista', is_ucabista);
       datos.append('is_not_ucabista', is_not_ucabista);
       datos.append('imagen_principal', imagen_dueno);
-
-
-
-      const body ={ username       ,
-                    first_name     ,
-                    last_name      ,
-                    email          ,
-                    password,
-                    is_dueño,
-                    is_ucabista,
-                    is_not_ucabista};
       
-      axios.post(`http://127.0.0.1:8000/api/usuario/`+dataDueno.id, datos)
+
+      
+      axios.post(`http://127.0.0.1:8000/api/auth/usuario/`+dataDueno.id,datos,config)
        .then(res => {
         if(res['data']['created']==false){
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
@@ -184,8 +171,8 @@ export default function Tienda() {
         }
 
         else {
-          alert('usuario registrado exitosamente');
-          let dueno= res['data']['usuario'];
+          alert('usuario actualizado exitosamente');
+          let dueno= res['data']['user'];
           dueno.ruta_imagen_principal='http://127.0.0.1:8000/uploads/'+dueno.ruta_imagen_principal
           setDataDueno(dueno);
         }
@@ -196,7 +183,7 @@ export default function Tienda() {
   }
 
   function pruebaemail (valor){
-    const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+    const re=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
     if(!re.exec(valor)){
       return 0
     }
@@ -221,8 +208,16 @@ export default function Tienda() {
       datos.append('imagen_tienda', imagen_tienda);
       datos.append('titulo', titulo);
       datos.append('dueno_id', dueno_id); 
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
        
-      axios.post(`http://127.0.0.1:8000/api/tienda/`+data.id, datos)
+      axios.post(`http://127.0.0.1:8000/api/auth/tienda/`+data.id, datos,config)
        .then(res => {
         if(res['data']['created']==false){
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
@@ -242,11 +237,73 @@ export default function Tienda() {
     }
   }
 
+  function handleSubmitProducto (e){
+    e.preventDefault();
+    console.log(tiendaId)
+    let titulo        = document.getElementById("titulo-producto").value;
+    let imagen_producto = document.getElementById("imagen_producto").files[0];
+    let cantidad = document.getElementById("cantidad-producto").value;
+    let estado_publicado = document.getElementById("estado_publicado-producto").value;
+    let descripcion = document.getElementById("descripcion-producto").value;
+    let fail=false;
+
+    if(titulo == 0) {
+      document.getElementById('titulo-producto-error').style.display = 'block';
+      fail=true;
+    }
+    else  document.getElementById('titulo-producto-error').style.display = 'none';
+
+
+    if(cantidad == 0) {
+      document.getElementById('cantidad-producto-error').style.display = 'block';
+      fail=true;
+    }
+    else  document.getElementById('cantidad-producto-error').style.display = 'none';
+
+    if(estado_publicado == 0) {
+      document.getElementById('estado_publicado-producto-error').style.display = 'block';
+      fail=true;
+    }
+    else  document.getElementById('estado_publicado-producto-error').style.display = 'none';
+
+    if(descripcion == 0) {
+      document.getElementById('descripcion-producto-error').style.display = 'block';
+      fail=true;
+    }
+    else  document.getElementById('descripcion-producto-error').style.display = 'none';
+
+    if(fail==false){
+      var datos = new FormData(); 
+      datos.append('titulo', titulo);
+      datos.append('imagen_producto', imagen_producto);
+      datos.append('tienda_id', tiendaId); 
+      datos.append('cantidad', cantidad); 
+      datos.append('estado_publicado', estado_publicado);
+      datos.append('descripcion', descripcion);
+
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+       
+      axios.post(`http://127.0.0.1:8000/api/auth/producto/`, datos,config)
+       .then(res => {
+         alert('Producto registrado exitosamente')
+         setDataProductos(res['data']['productos'])
+        
+      })
+       .catch(err => console.log('Login: ', err));
+    }
+  }
+
 
   return (
     <div className="tienda">
       <div className="tiendaTitleContainer">
-        <h1 className="tiendaTitle">Dueno del Negocio</h1>
+        <h1 className="tiendaTitle">Dueño del Negocio</h1>
       </div>
       <div className="tiendaContainer">
         <div className="tiendaShow">
@@ -430,13 +487,87 @@ export default function Tienda() {
 
     <br></br>
       <h1>Productos</h1>
-        <DataGrid
+
+      <div className="tiendaContainer">
+        <div className="productosShow">
+       
+            <DataGrid
           rows={dataProductos}
           disableSelectionOnClick
           columns={columns}
           pageSize={8}
           checkboxSelection
         />
+  
+          
+       
+        </div>
+        <div className="productoUpdate">
+          <span className="tiendaUpdateTitle">Registrar Producto</span>
+          <form className="tiendaUpdateForm" onSubmit={handleSubmitProducto}>
+            <div className="tiendaUpdateLeft">
+              <div className="tiendaUpdateItem">
+                <label>Titulo del Producto</label>
+                <input
+                  type="text"
+                  className="tiendaUpdateInput"
+                  id='titulo-producto'
+                />
+                 <p id="titulo-producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+              </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Cantidad</label>
+                <input
+                  type="number"
+                  className="tiendaUpdateInput"
+                  id='cantidad-producto'
+                />
+                 <p id="cantidad-producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+              </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Estado Publicado</label>
+                <input
+                  type="text"
+                  className="tiendaUpdateInput"
+                  id='estado_publicado-producto'
+                />
+                 <p id="estado_publicado-producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+              </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Descripcion</label>
+                <input
+                  type="text"
+                  className="tiendaUpdateInput"
+                  id='descripcion-producto'
+                />
+                 <p id="descripcion-producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+              </div>
+
+              <div className="tiendaUpdateItem">
+                <label>Imagen Del Producto</label>
+                <input
+                  type="file"
+                  className="tiendaUpdateInput"
+                  id='imagen_producto'
+                />
+                 <p id="imagen_producto-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
+        
+              </div>
+
+              <div className="tiendaUpdateItem">
+                
+
+                <button className="tiendaUpdateButton">Update</button> 
+                </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+
 
     </div>
   );

@@ -1,9 +1,12 @@
-import { Add, Remove } from "@material-ui/icons";
+
 import styled from "styled-components";
-import Announcement from "../components/Announcement";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
+import Navbar from "../../../components/tiendas/Navbar";
+import { useState,useEffect } from "react";
+import axios from 'axios';
+import { DeleteOutline } from "@material-ui/icons";
+import './Cart.css'
+import { isUnitless } from "@mui/material/styles/cssUtils";
 
 const Container = styled.div``;
 
@@ -126,7 +129,7 @@ const Summary = styled.div`
   border: 0.5px solid lightgray;
   border-radius: 10px;
   padding: 20px;
-  height: 50vh;
+  height: 100vh;
 `;
 
 const SummaryTitle = styled.h1`
@@ -154,97 +157,228 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+
+  const [data,setData] =useState([])
+
+  const getProducto= async() =>{
+    let user = window.localStorage.getItem('loggedNotAppUser');
+    user=JSON.parse(user);
+    const userid=user.user.id
+    const url=`http://127.0.0.1:8000/api/auth/carro/getByUserId/`+userid;
+  
+  
+    const token= user['access_token'];
+  
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+  
+    axios.get(url,config)
+     .then(res => {
+       console.log(res['data']['productos'])
+       setData(res['data']['productos']);
+      
+    })
+     .catch(err => console.log('Login: ', err));
+  }
+
+  
+  const handleDelete= async(productId) =>{
+    let user = window.localStorage.getItem('loggedNotAppUser');
+    user=JSON.parse(user);
+    const userid=user.user.id
+    const url=`http://127.0.0.1:8000/api/auth/carro/remove`;
+  
+  
+    const token= user['access_token'];
+  
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+    var datos = new FormData(); 
+    datos.append('usuario_id', userid);
+    datos.append('producto_id', productId);
+  
+    axios.post(url,datos,config)
+    .then(res => {
+      alert('Producto retirado exitosamente del carrito')
+       console.log(res)
+       setData(res['data']['productos']);
+    })
+     .catch(err => console.log('Login: ', err));
+  }
+  useEffect(()=>{
+    getProducto()
+  },[])
+
+  function checkBoxPaypal(){
+    document.getElementById('checkbox-pm').checked=false;
+    document.getElementById('checkbox-efectivo').checked=false;
+    document.getElementById('block-paypal').style.display = 'block';
+    document.getElementById('block-pm').style.display = 'none';
+    document.getElementById('block-efectivo').style.display = 'none';
+  }
+
+  function checkBoxPm(){
+    document.getElementById('checkbox-paypal').checked=false;
+    document.getElementById('checkbox-efectivo').checked=false;
+    document.getElementById('block-paypal').style.display = 'none';
+   document.getElementById('block-pm').style.display = 'block';
+   document.getElementById('block-efectivo').style.display = 'none';
+   }
+
+   function checkBoxEfectivo(){
+    document.getElementById('checkbox-pm').checked=false;
+    document.getElementById('checkbox-paypal').checked=false;
+    document.getElementById('block-paypal').style.display = 'none';
+   document.getElementById('block-pm').style.display = 'none';
+   document.getElementById('block-efectivo').style.display = 'block';
+   }
+
+   function save(){
+    let user = window.localStorage.getItem('loggedNotAppUser');
+    user=JSON.parse(user);
+    const userid=user.user.id
+    const url=`http://127.0.0.1:8000/api/auth/pedido/`;
+  
+  
+    const token= user['access_token'];
+  
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
+    const is_pago_movil = document.getElementById('checkbox-pm').checked;
+    const is_paypal     = document.getElementById('checkbox-paypal').checked;
+    const is_efectivo   = document.getElementById('checkbox-efectivo').checked;
+    const imagen_pago_movil = document.getElementById("imagen-pago-movil").files[0];
+    const imagen_efectivo = document.getElementById("imagen-pago-efectivo").files[0];
+    const correo_paypal = document.getElementById("correo-paypal").value;
+    const descripcion = document.getElementById("descripcion").value;
+    const nombre = document.getElementById("nombre").value;
+
+    var datos = new FormData(); 
+    datos.append('usuario_id', userid);
+    datos.append('is_paypal', is_paypal);
+    datos.append('is_pago_movil', is_pago_movil);
+    datos.append('is_efectivo', is_efectivo);
+    datos.append('descripcion',descripcion);
+    datos.append('nombre',nombre);
+
+    if(is_efectivo==true)    datos.append('imagen_efectivo', imagen_efectivo);
+    if(is_pago_movil==true)  datos.append('imagen_pago_movil', imagen_pago_movil);
+    if(is_paypal==true)      datos.append('correo_paypal',correo_paypal);
+
+
+ 
+    axios.post(url,datos,config)
+     .then(res => {
+      console.log(res)
+    })
+     .catch(err => console.log('Login: ', err));
+
+
+
+   }
+
+  
   return (
     <Container>
-      <Navbar />
-      <Announcement />
+    <Navbar />
       <Wrapper>
-        <Title>YOUR BAG</Title>
-        <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
-          <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
-            <TopText>Your Wishlist (0)</TopText>
-          </TopTexts>
-          <TopButton type="filled">CHECKOUT NOW</TopButton>
-        </Top>
         <Bottom>
           <Info>
+          {data.map((item) => (
             <Product>
-              <ProductDetail>
-                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> JESSIE THUNDER SHOES
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 93813718293
-                  </ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize>
-                    <b>Size:</b> 37.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 30</ProductPrice>
-              </PriceDetail>
-            </Product>
+            <ProductDetail>
+              <Image src={"http://127.0.0.1:8000/uploads/"+item[0]['ruta_imagen_principal']}   />
+              <Details>
+                <ProductName>
+                  <b>Product:</b> {item[0]['titulo']}
+                </ProductName>
+                <ProductId>
+                  <b>ID:</b> {item[0]['id']}
+                </ProductId>
+                <ProductId>
+                  <b>Descripcion:</b> {item[0]['descripcion']}
+                </ProductId>
+              </Details>
+            </ProductDetail>
+            <PriceDetail>
+              <ProductAmountContainer>
+                <ProductAmount>{item[0]['cantidad']}</ProductAmount>
+                
+                <DeleteOutline
+                  className="productListDelete"
+                  onClick={() => handleDelete(item[0]['id'])}
+              />
+ 
+              </ProductAmountContainer>
+              <ProductPrice>$ {item[0]['cantidad']}</ProductPrice>
+            </PriceDetail>
+          </Product>
+          ))}
+            
             <Hr />
-            <Product>
-              <ProductDetail>
-                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> HAKURA T-SHIRT
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 93813718293
-                  </ProductId>
-                  <ProductColor color="gray" />
-                  <ProductSize>
-                    <b>Size:</b> M
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>1</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 20</ProductPrice>
-              </PriceDetail>
-            </Product>
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-            <SummaryItem>
-              <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-            </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ 80</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <SummaryItem type="pago">
+              <SummaryItemText>Metodo de Pago</SummaryItemText>
+              <div>
+              Paypal:     <input id="checkbox-paypal" type="checkbox" onClick={checkBoxPaypal}/>
+              <br></br>
+              Pago Movil: <input id="checkbox-pm" type="checkbox" onClick={checkBoxPm}/>
+              <br></br>
+              Efectivo:   <input id="checkbox-efectivo" type="checkbox" onClick={checkBoxEfectivo}/>
+            </div>
+
+            </SummaryItem>  
+            <SummaryItem style={{display:'none'}} id='block-paypal'>
+            <div>              
+              <h1>Pago de Paypal</h1>
+              Ingrese el correo: <input name="isGoing" type="text" id='correo-paypal' />
+              </div>
+            </SummaryItem>
+
+            <SummaryItem style={{display:'none'}}  id='block-pm'>
+            <div>              
+              <h1>Pago Movil</h1>
+              Ingrese la imagen de la transaccion: <input name="isGoing" type="file" id='imagen-pago-movil'/>
+              </div>
+            </SummaryItem>
+
+            <SummaryItem style={{display:'none'}} id='block-efectivo'>
+            <div>              
+              <h1>Pago Efectivo</h1>
+              Ingrese la imagen del efectivo: <input name="isGoing" type="file" id='imagen-pago-efectivo' />
+              </div>
+            </SummaryItem>
+
+            <SummaryItem>
+            <div>              
+              <h1>Descripcion</h1>
+              <input name="isGoing" type="text" style={{width:'300px'}} id='descripcion' />
+              </div>
+            </SummaryItem>
+
+            <SummaryItem>
+            <div>              
+              <h1>Nombre</h1>
+              <input name="isGoing" type="text" style={{width:'300px'}} id='nombre' />
+              </div>
+            </SummaryItem>
+
+
+            <Button onClick={save}>CHECKOUT NOW</Button>
           </Summary>
         </Bottom>
       </Wrapper>
-      <Footer />
     </Container>
   );
 };

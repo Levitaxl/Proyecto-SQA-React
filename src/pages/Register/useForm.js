@@ -26,27 +26,29 @@ const useForm = (callback, validate) => {
     e.preventDefault();
 
     setErrors(validate(values));
-    console.log(errors)
+    console.log(values)
+    console.log(errors);
+    const is_ucabista = document.getElementById('is_ucabista').checked;
+    values['is_ucabista']=is_ucabista;
     if(isEmpty(errors)) {
-      values.is_dueño=false;
-      axios.post(`http://127.0.0.1:8000/api/usuario/`, values)
+      axios.post(`http://127.0.0.1:8000/api/auth/register/`, values)
        .then(res => {
-        console.log(res);
+         console.log(res)
         if(res['data']['created']==false){
-          if(res['data']['errors'][0]=='El nombre de usuario ya se encuentra registrado')document.getElementById('username-has-already-been-taken-error').style.display = 'block';
+          if(res['data']['errors'][0]=="El nombre de User ya se encuentra registrado")document.getElementById('username-has-already-been-taken-error').style.display = 'block';
           else document.getElementById('username-has-already-been-taken-error').style.display = 'none';
-
+         
           if(res['data']['errors'][0]=='El email de usuario ya se encuentra registrado')document.getElementById('email-has-already-been-taken-error').style.display = 'block';
           else document.getElementById('email-has-already-been-taken-error').style.display = 'none';
         }
-
-        else window.location.href = "/login";
+        else{
+          alert('Usuario Registrado Exitosamente');
+          window.location.href = "/login";
+        } 
 
       })
        .catch(err => console.log('Login: ', err));
-
     }
-    
   };
 
   function isEmpty(value){

@@ -1,11 +1,5 @@
 import "./widgetSm.css";
-import {
-  CollectionsBookmarkOutlined,
-  Publish,
-} from "@material-ui/icons";
-import { useState,useEffect } from "react";
 import axios from 'axios';
-import md5 from 'md5'
 export default function WidgetSm() {
   function handleSubmitDuenoDeNegocio (e){
     e.preventDefault();
@@ -18,6 +12,9 @@ export default function WidgetSm() {
     let titulo        = document.getElementById("titulo").value;
     let imagen_tienda = document.getElementById("imagen_tienda").files[0];
     let fail=false;
+
+    console.log('el email es:'+ email);
+    console.log(pruebaemail(email));
 
     if(username == 0) {
       document.getElementById('username-error').style.display = 'block';
@@ -64,12 +61,8 @@ export default function WidgetSm() {
     else  document.getElementById('titulo-error').style.display = 'none';
 
 
-
+    
     if(fail==false){
-      let axiosConfig = {
-        headers: {'Access-Control-Allow-Origin': '*' }
-      };
-
       const is_dueño=1;
       const is_ucabista=0;
       const is_not_ucabista=0;
@@ -87,9 +80,17 @@ export default function WidgetSm() {
       datos.append('imagen_tienda', imagen_tienda);
       datos.append('titulo', titulo); 
 
+      const user = JSON.parse(window.localStorage.getItem('loggedNotAppUserAdmin'));
+      const token= user['access_token'];
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
       
-      axios.post(`http://127.0.0.1:8000/api/storeDuenoDeNegocio/`, datos)
+      
+      axios.post(`http://127.0.0.1:8000/api/auth/storeDuenoDeNegocio`,datos,config)
        .then(res => {
+         console.log(res)
          if(res['data']['created']==false){
           console.log(res['data']['errors'][0]);
           if(res['data']['errors'][0]=='The titulo has already been taken.')document.getElementById('titulo-has-already-been-taken-error').style.display = 'block';
@@ -113,7 +114,7 @@ export default function WidgetSm() {
   }
 
   function pruebaemail (valor){
-    const re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+    const re=/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
     if(!re.exec(valor)){
       return 0
     }
@@ -122,7 +123,7 @@ export default function WidgetSm() {
 
   return (
     <div className="widgetSm">
-      <span className="widgetSmTitle">New Join Members</span>
+      <span className="widgetSmTitle">Nueva Tienda</span>
       <ul className="widgetSmList">
         <li className="widgetSmListItem">
         <form className="tiendaUpdateForm" onSubmit={handleSubmitDuenoDeNegocio} id='miFormulario'>
@@ -160,7 +161,6 @@ export default function WidgetSm() {
                 <label>Email</label>
                 <input
                   type="text"
-
                   className="tiendaUpdateInput"
                   id='email'
                 />

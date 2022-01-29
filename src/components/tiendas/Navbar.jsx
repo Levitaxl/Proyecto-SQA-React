@@ -2,7 +2,7 @@ import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
-import { mobile } from "../responsive";
+import { mobile } from "./responsive";
 import { Link } from "react-router-dom";
 
 const Container = styled.div`
@@ -70,6 +70,17 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+
+  function myFunction(){
+    window.localStorage.removeItem('loggedNotAppUser');
+    alert('Se ha cerrado su sesion');
+    window.location.href = "/login";
+  }
+
+  function myFunction2(){
+    window.location.href = "/cart";
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -82,13 +93,8 @@ const Navbar = () => {
         
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
-          <MenuItem>
-            <Badge badgeContent={4} color="primary">
-              <ShoppingCartOutlined />
-            </Badge>
-          </MenuItem>
+          <MenuItem onClick={myFunction2}>Carrito</MenuItem>
+          <MenuItem onClick={myFunction}>LOG OUT</MenuItem>
         </Right>
       </Wrapper>
     </Container>

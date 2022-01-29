@@ -1,37 +1,62 @@
 import Sidebar from "./components/sidebar/Sidebar";
-import Topbar from "./components/topbar/Topbar";
 import "./App.css";
 import Home from "./pages/home/Home";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route,Redirect } from "react-router-dom";
 import UserList from "./pages/userList/UserList";
 import User from "./pages/user/User";
 import NewUser from "./pages/newUser/NewUser";
 import ProductList from "./pages/productList/ProductList";
 import Product from "./pages/product/Product";
 import NewProduct from "./pages/newProduct/NewProduct";
-import Form from './form/form/Form'
+import Register from './pages/Register/Register'
 import TiendaList from "./pages/tiendaList/TiendaList";
 import Tienda from "./pages/tienda/Tienda";
 import Producto from "./pages/producto/Producto"
 
 function App() {
+  let admin = window.localStorage.getItem('loggedNotAppUserAdmin');
+  if (admin!= null) admin=JSON.parse(admin);
   return (
     <Router>
-      <Topbar />
-      <div className="container">
         <Switch>
-          <Route exact path="/">
-            <Sidebar />
-            <Home />
+          <Route path="/admin/index" render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Home /></div>
+            else window.location.href = "/login";
+          }}>
           </Route>
-          <Route path="/users">
-            <Sidebar />
-            <UserList />
+
+          <Route path="/tienda/:tiendaId"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Tienda /></div>
+            else window.location.href = "/login";
+          }}>
           </Route>
-          <Route path="/user/:userId">
-           <Sidebar />
-            <User />
+
+          <Route path="/tiendas"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><TiendaList /></div>
+            else window.location.href = "/login";
+          }}>
           </Route>
+
+          <Route path="/newproduct"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><NewProduct /></div>
+            else window.location.href = "/login";
+          }}></Route>
+
+          <Route path="/producto/:productoId"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><Producto /></div>
+            else window.location.href = "/login";
+          }}></Route>
+
+          <Route path="/users"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><UserList /></div>
+            else window.location.href = "/login";
+          }}></Route>
+
+          <Route path="/user/:userId"  render={()=>{
+            if(admin!=null)return <div className="container"><Sidebar /><User /></div>
+            else window.location.href = "/login";
+          }}></Route>
+          
           <Route path="/newUser">
             <Sidebar />
             <NewUser />
@@ -40,31 +65,18 @@ function App() {
             <Sidebar />
             <ProductList />
           </Route>
-          <Route path="/product/:productId">
-            <Sidebar />
-            <Product />
-          </Route>
-          <Route path="/newproduct">
-            <Sidebar />
-            <NewProduct />
-          </Route>
 
           <Route path="/register">
-            <Form />
+            <Register />
           </Route>/
 
 
-          <Route path="/tiendas">
-            <Sidebar />
-            <TiendaList />
-          </Route>
-          <Route path="/tienda/:tiendaId">
-            <Sidebar />
-            <Tienda />
-          </Route>
+          
           <Route path="/producto/:productoId">
-            <Sidebar />
-            <Producto />
+          < div className="container">
+              <Sidebar />
+              <Producto />
+            </div>
           </Route>
           <Route path="/newTienda">
             <Sidebar />
@@ -76,7 +88,6 @@ function App() {
 
 
         </Switch>
-      </div>
     </Router>
     
   );

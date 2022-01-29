@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import './Form.css';
 import FormSignup from './FormSignup';
-import FormSuccess from './FormSuccess';
 
-const Form = () => {
+const Register = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   function submitForm() {
@@ -21,4 +20,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default Register;
