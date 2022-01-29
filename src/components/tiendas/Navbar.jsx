@@ -77,6 +77,10 @@ const Navbar = () => {
     window.location.href = "/login";
   }
 
+  function myFunction2(){
+    window.location.href = "/cart";
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -89,7 +93,7 @@ const Navbar = () => {
         
         </Center>
         <Right>
-          <MenuItem>PERFIL</MenuItem>
+          <MenuItem onClick={myFunction2}>Carrito</MenuItem>
           <MenuItem onClick={myFunction}>LOG OUT</MenuItem>
         </Right>
       </Wrapper>

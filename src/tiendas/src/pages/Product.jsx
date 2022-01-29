@@ -122,6 +122,7 @@ const Product = () => {
 
   let { productId } = useParams();
   const [data,setData] =useState({})
+  const [amount,setAmount] =useState(1)
 
   const getProducto= async(tiendaId) =>{
     const url=`http://127.0.0.1:8000/api/auth/producto/`+productId;
@@ -153,6 +154,44 @@ const Product = () => {
     getProducto(productId)
   },[])
 
+  function add(){
+    if(data.cantidad>amount)setAmount(amount+1);
+  }
+
+
+  function remove(){
+    if(amount>1)setAmount(amount-1);
+  }
+
+  function add_to_cart(){
+    let cantidad           = amount;
+    let user = window.localStorage.getItem('loggedNotAppUser');
+    user=JSON.parse(user);
+    const userid=user.user.id
+    console.log(productId)
+
+    var datos = new FormData(); 
+    datos.append('usuario_id', userid);
+    datos.append('cantidad', cantidad);
+    datos.append('producto_id', productId);
+
+    const token= user['access_token'];
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    axios.post(`http://127.0.0.1:8000/api/auth/carro/add`,datos,config)
+       .then(res => {
+         console.log(res);
+      })
+       .catch(err => console.log('Login: ', err));
+    
+
+
+
+
+  }
+
 
   return (
     <Container>
@@ -169,11 +208,11 @@ const Product = () => {
           <Price>$ {data.cantidad}</Price>
           <AddContainer>
             <AmountContainer>
-              <Remove />
-              <Amount>{data.cantidad}</Amount>
-              <Add />
+              <Remove onClick={remove}/>
+              <Amount id="amount">{amount}</Amount>
+              <Add onClick={add}/>
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={add_to_cart}>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>

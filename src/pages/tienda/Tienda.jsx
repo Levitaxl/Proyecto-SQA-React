@@ -303,7 +303,7 @@ export default function Tienda() {
   return (
     <div className="tienda">
       <div className="tiendaTitleContainer">
-        <h1 className="tiendaTitle">Dueno del Negocio</h1>
+        <h1 className="tiendaTitle">Dueño del Negocio</h1>
       </div>
       <div className="tiendaContainer">
         <div className="tiendaShow">

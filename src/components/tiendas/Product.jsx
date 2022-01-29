@@ -33,6 +33,7 @@ const Container = styled.div`
   justify-content: center;
   background-color: #f5fbfd;
   position: relative;
+  max-width:430px;
 
   &:hover ${Info}{
     opacity: 1;

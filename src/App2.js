@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 import ProductList from "./pages/ProductListC/ProductList";
 import Product from './tiendas/src/pages/Product'
 import Login from   "./pages/Login/Login"
+import Cart from './tiendas/src/pages/Cart'
 import Tiendas from './pages/Tiendas/Tiendas'
 
 function App2() {
@@ -34,6 +35,12 @@ function App2() {
           }}>
           </Route>
 
+          <Route path="/cart" render={()=>{
+            if(user!=null)return <Cart/>
+            else return <Redirect to='/login'/>;
+          }}>
+          </Route>
+
      
 
           <Route path="/login">
@@ -43,6 +50,7 @@ function App2() {
           <Route path="/admin/login">
             <Login />
           </Route>
+
         </Switch>
     </Router>
     

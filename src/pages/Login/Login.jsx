@@ -141,7 +141,7 @@ function pruebaemail (valor){
   return (
     <Container>
       <Wrapper>
-        <Title>SIGN IN</Title>
+        <Title>LOGIN</Title>
         <Form onSubmit={handleSubmitLogin} >
           <Input
             type='text'
