@@ -159,6 +159,7 @@ const Button = styled.button`
 const Cart = () => {
 
   const [data,setData] =useState([])
+  const [total,setTotal] =useState(0)
 
   const getProducto= async() =>{
     let user = window.localStorage.getItem('loggedNotAppUser');
@@ -177,6 +178,7 @@ const Cart = () => {
      .then(res => {
        console.log(res['data']['productos'])
        setData(res['data']['productos']);
+       setTotal(res['data']['total']);
       
     })
      .catch(err => console.log('Login: ', err));
@@ -205,6 +207,7 @@ const Cart = () => {
       alert('Producto retirado exitosamente del carrito')
        console.log(res)
        setData(res['data']['productos']);
+       setTotal(0)
     })
      .catch(err => console.log('Login: ', err));
   }
@@ -274,7 +277,8 @@ const Cart = () => {
  
     axios.post(url,datos,config)
      .then(res => {
-      console.log(res)
+        alert('Pedido realizado exitosamente');
+        window.location.href = "/home";
     })
      .catch(err => console.log('Login: ', err));
 
@@ -323,10 +327,10 @@ const Cart = () => {
             <Hr />
           </Info>
           <Summary>
-            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+            <SummaryTitle>Pedido</SummaryTitle>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="pago">
               <SummaryItemText>Metodo de Pago</SummaryItemText>
@@ -375,7 +379,7 @@ const Cart = () => {
             </SummaryItem>
 
 
-            <Button onClick={save}>CHECKOUT NOW</Button>
+            <Button onClick={save}>REALIZAR CHECKOUT</Button>
           </Summary>
         </Bottom>
       </Wrapper>
