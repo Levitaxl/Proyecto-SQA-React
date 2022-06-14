@@ -215,7 +215,7 @@ const Product = () => {
               <Amount id="amount">{amount}</Amount>
               <Add onClick={add}/>
             </AmountContainer>
-            <Button onClick={add_to_cart}>ADD TO CART</Button>
+            <Button onClick={add_to_cart}>Agregar Al Carrito</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>

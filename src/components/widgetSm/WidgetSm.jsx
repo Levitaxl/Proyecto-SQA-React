@@ -140,7 +140,7 @@ export default function WidgetSm() {
               </div>
 
               <div className="tiendaUpdateItem">
-                <label>First Name</label>
+                <label>Nombre</label>
                 <input
                   type="text"
                   className="tiendaUpdateInput"
@@ -149,7 +149,7 @@ export default function WidgetSm() {
                  <p id="first_name-error" className="text-danger" style={{display:'none'}}>Este campo no puede ser vacío </p>
               </div>
               <div className="tiendaUpdateItem">
-                <label>Last Name</label>
+                <label>Apellido</label>
                 <input
                   type="text"
                   className="tiendaUpdateInput"
@@ -216,7 +216,7 @@ export default function WidgetSm() {
               <div className="tiendaUpdateItem">
                 
 
-              <button className="tiendaUpdateButton">Update</button> 
+              <button className="tiendaUpdateButton">Crear</button> 
               </div>
            
             </div>
